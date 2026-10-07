@@ -222,6 +222,21 @@
     .firefly-actions .btn{pointer-events:auto}
     @media(max-width:640px){.firefly-copy{margin-top:clamp(88px,11vh,112px)}.firefly-copy h2{font-size:clamp(2.4rem,11vw,4.2rem)}.firefly-copy .lead{max-width:94%;font-size:.98rem}.firefly-hint{max-width:85%;font-size:.78rem}.firefly-quote{right:18px;bottom:94px;width:calc(100% - 36px);padding:17px 19px}.firefly-actions{right:18px;bottom:20px}}
     @media(prefers-reduced-motion:reduce){.firefly-quote{transition:none}}
+    .human-page{padding:0;min-height:100vh;min-height:100svh;align-items:stretch;background:radial-gradient(ellipse at 52% 52%,rgba(31,69,78,.42),transparent 42%),#050a10}
+    .human-page:before,.human-page:after{display:none}
+    .human-stage{position:absolute;inset:0;z-index:0;touch-action:none;cursor:grab}
+    .human-stage:active{cursor:grabbing}
+    .human-stage canvas{display:block;width:100%;height:100%}
+    .human-copy{position:relative;z-index:2;width:100%;max-width:var(--max);margin:0 auto;padding:clamp(92px,13vh,150px) clamp(22px,6vw,88px) 180px;pointer-events:none}
+    .human-copy .kicker,.human-copy h2,.human-copy .lead{pointer-events:auto}
+    .human-copy h2{max-width:780px;margin:18px 0 22px;font-size:clamp(2.5rem,4.6vw,4.5rem);line-height:1.02}
+    .human-copy .lead{max-width:490px;font-size:1.05rem}
+    .human-scale{position:absolute;z-index:2;left:clamp(22px,6vw,88px);bottom:30px;width:min(460px,calc(100% - 310px));min-height:90px;padding:14px 18px;border-left:2px solid var(--cyan);background:linear-gradient(90deg,rgba(4,12,20,.86),rgba(4,12,20,.28));backdrop-filter:blur(10px);pointer-events:none}
+    .human-scale small{display:block;color:var(--cyan);font-size:.7rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+    .human-scale strong{display:block;margin:5px 0;color:var(--ink);font-size:1rem}
+    .human-scale p{margin:0;color:#aebdca;font-size:.82rem;line-height:1.45}
+    .human-actions{position:absolute;z-index:3;right:clamp(22px,6vw,88px);bottom:30px;margin:0}
+    @media(max-width:700px){.human-copy{padding:86px 22px 0}.human-copy h2{max-width:540px;margin:12px 0;font-size:2.15rem;line-height:1.02}.human-copy .lead{display:none}.human-scale{left:22px;bottom:98px;width:min(330px,calc(100% - 44px));min-height:78px;padding:11px 14px}.human-scale strong{font-size:.9rem}.human-scale p{font-size:.75rem}.human-actions{right:18px;bottom:20px}.human-actions .btn{min-height:48px;padding:12px 17px;font-size:.84rem}}
   </style>
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}</script>
 </head>
@@ -245,8 +260,19 @@
 
     <section class="scene" data-page="6" aria-labelledby="quiz-title"><div class="wrap"><div class="kicker">06 — Quiz</div><h2 id="quiz-title">Bạn đã <span class="accent">nắm được gì?</span></h2><div class="quiz-grid"><aside class="score-card"><div><small>TIẾN ĐỘ</small><div class="score-ring" id="scoreRing"><strong id="scoreValue">0/4</strong></div></div><p class="explain">Chọn một đáp án. Bạn sẽ nhận phản hồi ngay và có thể quay lại phần kiến thức liên quan.</p></aside><section class="quiz-card" id="quizCard" aria-live="polite"></section></div></div></section>
   </main>
+  <template id="humanPageTemplate">
+    <section class="scene human-page" data-page="1" aria-labelledby="human-title">
+      <div class="human-stage" id="humanStage" tabindex="0" aria-label="Mô hình 3D con người. Kéo để xoay góc nhìn, cuộn để lần lượt quan sát toàn thân, cơ quan và cấu trúc tế bào. Nhấn phím mũi tên để điều hướng bài học."><canvas id="humanCanvas" role="img" aria-label="Mô hình minh họa 3D một người đang đứng, với các lớp cơ quan và tế bào có thể khám phá bằng thao tác zoom"></canvas></div>
+      <div class="wrap human-copy">
+        <div class="kicker">Một câu hỏi về vận động</div>
+        <h2 id="human-title">Khi bạn đứng yên,<br/><span class="accent">bạn có thực sự đứng yên?</span></h2>
+      </div>
+      <aside class="human-scale" id="humanScale" aria-live="polite" aria-atomic="true"><small id="humanScaleNumber">01 / TOÀN THỂ</small><strong id="humanScaleTitle">Con người trong môi trường</strong><p id="humanScaleText">Ở xa, cơ thể là một chỉnh thể đứng yên tương đối giữa không gian xung quanh.</p></aside>
+      <div class="actions human-actions"><button class="btn" data-go="2" data-current-go>Tiếp tục: Những đốm sáng <span aria-hidden="true">→</span></button></div>
+    </section>
+  </template>
   <template id="fireflyPageTemplate">
-    <section class="scene firefly-page" data-page="1" aria-labelledby="firefly-title">
+    <section class="scene firefly-page" data-page="2" aria-labelledby="firefly-title">
       <div class="firefly-stage" id="fireflyStage" aria-label="Không gian đom đóm 3D. Kéo để xoay, cuộn để phóng to hoặc thu nhỏ, nhấn một đốm sáng để khám phá nội dung."><canvas id="fireflyCanvas"></canvas></div>
       <div class="wrap firefly-copy">
         <div class="kicker">Một khoảng lặng</div>
@@ -255,19 +281,19 @@
         <div class="firefly-hint">Kéo để xoay · lăn để đổi góc nhìn · chạm đốm sáng để khám phá</div>
       </div>
       <aside class="firefly-quote" id="fireflyQuote" aria-live="polite" aria-atomic="true"><small id="fireflyTopic">Ý niệm</small><p id="fireflyText"></p><cite id="fireflySource"></cite></aside>
-      <div class="actions firefly-actions"><button class="btn" data-go="2" data-current-go>Tiếp tục đến vật chất <span aria-hidden="true">→</span></button></div>
+      <div class="actions firefly-actions"><button class="btn" data-go="3" data-current-go>Tiếp tục đến vật chất <span aria-hidden="true">→</span></button></div>
     </section>
   </template>
   <script>
-    const template=document.getElementById('fireflyPageTemplate'), oldScenes=[...document.querySelectorAll('.scene')], matterScene=oldScenes[1];oldScenes.slice(1).forEach(scene=>scene.dataset.page=String(Number(scene.dataset.page)+1));matterScene.before(template.content.firstElementChild);document.querySelector('.hero [data-go="1"]').setAttribute('data-current-go','');
+    const humanTemplate=document.getElementById('humanPageTemplate'),fireflyTemplate=document.getElementById('fireflyPageTemplate'),oldScenes=[...document.querySelectorAll('.scene')],heroScene=oldScenes[0];oldScenes.slice(1).forEach(scene=>scene.dataset.page=String(Number(scene.dataset.page)+2));heroScene.after(humanTemplate.content.firstElementChild,fireflyTemplate.content.firstElementChild);document.querySelector('.hero [data-go="1"]').setAttribute('data-current-go','');
     const scenes=[...document.querySelectorAll('.scene')], rail=document.getElementById('rail'), bar=document.getElementById('bar'), step=document.getElementById('step');let page=0,locked=false,initialNavigation=true;
     scenes.forEach((_,i)=>{const b=document.createElement('button');b.setAttribute('aria-label',`Trang ${i+1}`);b.onclick=()=>show(i,true);rail.appendChild(b)});
-    function show(i,currentPage=false){if(!currentPage&&!initialNavigation&&i>=1)i++;initialNavigation=false;page=Math.max(0,Math.min(scenes.length-1,i));scenes.forEach((s,n)=>s.classList.toggle('active',n===page));[...rail.children].forEach((b,n)=>b.classList.toggle('active',n===page));bar.style.width=((page+1)/scenes.length*100)+'%';step.textContent=String(page+1).padStart(2,'0')+' / '+String(scenes.length).padStart(2,'0');history.replaceState(null,'','#'+(page+1));window.scrollTo(0,0)}
+    function show(i,currentPage=false){if(!currentPage&&!initialNavigation&&i>=1)i+=2;initialNavigation=false;page=Math.max(0,Math.min(scenes.length-1,i));scenes.forEach((s,n)=>s.classList.toggle('active',n===page));[...rail.children].forEach((b,n)=>b.classList.toggle('active',n===page));bar.style.width=((page+1)/scenes.length*100)+'%';step.textContent=String(page+1).padStart(2,'0')+' / '+String(scenes.length).padStart(2,'0');history.replaceState(null,'','#'+(page+1));window.scrollTo(0,0)}
     document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)show(+b.dataset.go,b.hasAttribute('data-current-go'))});
     window.addEventListener('keydown',e=>{if(e.target.matches('input,button')||e.target.closest('#roomViewport'))return;if(e.key==='ArrowRight'||e.key==='PageDown')show(page+1,true);if(e.key==='ArrowLeft'||e.key==='PageUp')show(page-1,true)});
     function canScroll(delta){const max=document.documentElement.scrollHeight-innerHeight;if(max<6)return false;return delta>0?scrollY<max-6:scrollY>6}
-    window.addEventListener('wheel',e=>{if(e.target.closest('input,button')||e.target.closest('#fireflyStage')||locked||Math.abs(e.deltaY)<34||canScroll(e.deltaY))return;locked=true;show(page+(e.deltaY>0?1:-1),true);setTimeout(()=>locked=false,760)},{passive:true});
-    let touchY=0;window.addEventListener('touchstart',e=>touchY=e.changedTouches[0].clientY,{passive:true});window.addEventListener('touchend',e=>{if(e.target.closest('input,button')||e.target.closest('#fireflyStage'))return;const dy=touchY-e.changedTouches[0].clientY;if(Math.abs(dy)>60&&!canScroll(dy))show(page+(dy>0?1:-1),true)},{passive:true});
+    window.addEventListener('wheel',e=>{if(e.target.closest('input,button')||e.target.closest('#fireflyStage')||e.target.closest('#humanStage')||locked||Math.abs(e.deltaY)<34||canScroll(e.deltaY))return;locked=true;show(page+(e.deltaY>0?1:-1),true);setTimeout(()=>locked=false,760)},{passive:true});
+    let touchY=0;window.addEventListener('touchstart',e=>touchY=e.changedTouches[0].clientY,{passive:true});window.addEventListener('touchend',e=>{if(e.target.closest('input,button')||e.target.closest('#fireflyStage')||e.target.closest('#humanStage'))return;const dy=touchY-e.changedTouches[0].clientY;if(Math.abs(dy)>60&&!canScroll(dy))show(page+(dy>0?1:-1),true)},{passive:true});
     window.addEventListener('pointermove',e=>{document.documentElement.style.setProperty('--mx',e.clientX+'px');document.documentElement.style.setProperty('--my',e.clientY+'px')},{passive:true});
     const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches,canvas=document.getElementById('particleCanvas'),ctx=canvas.getContext('2d');let particles=[],raf;
     function sizeCanvas(){const d=Math.min(devicePixelRatio||1,2),r=canvas.getBoundingClientRect();canvas.width=r.width*d;canvas.height=r.height*d;ctx.setTransform(d,0,0,d,0,0);particles=Array.from({length:Math.min(85,Math.floor(r.width/15))},()=>({x:Math.random()*r.width,y:Math.random()*r.height,r:Math.random()*1.6+.35,vx:Math.random()*.16+.03,vy:(Math.random()-.5)*.08,a:Math.random()*.55+.12,h:Math.random()>.72?38:190}))}
@@ -497,6 +523,99 @@
         if(data.selectedAt&&age>=5200){data.selectedAt=0;if(activeFirefly===firefly)activeFirefly=null;}
       }
       renderer.render(scene,camera);
+    }
+    animate();
+  </script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js';
+
+    const page=document.querySelector('.human-page'),stage=document.getElementById('humanStage'),canvas=document.getElementById('humanCanvas');
+    const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'high-performance'});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.75));renderer.setSize(window.innerWidth,window.innerHeight);renderer.setClearColor(0x050a10,0);
+    const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(48,window.innerWidth/window.innerHeight,.1,100);
+    const controls=new OrbitControls(camera,canvas);controls.target.set(0,1.03,0);controls.enableDamping=true;controls.dampingFactor=.055;controls.rotateSpeed=.42;controls.zoomSpeed=.58;controls.enablePan=false;controls.minDistance=2.25;controls.maxDistance=16;
+    camera.position.set(0,1.92,window.innerWidth<=700?8.8:9.3);controls.update();
+    scene.add(new THREE.HemisphereLight(0xa9e5ed,0x10131d,2.0));
+    const keyLight=new THREE.DirectionalLight(0xe3f5ff,2.4);keyLight.position.set(-3,6,7);scene.add(keyLight);
+    const rimLight=new THREE.PointLight(0x62e4dd,18,12);rimLight.position.set(2.4,2.8,-2);scene.add(rimLight);
+
+    const environment=new THREE.Group();scene.add(environment);
+    const floor=new THREE.Mesh(new THREE.CircleGeometry(5.6,96),new THREE.MeshBasicMaterial({color:0x17343a,transparent:true,opacity:.32,side:THREE.DoubleSide,depthWrite:false}));floor.rotation.x=-Math.PI/2;floor.position.y=-.025;environment.add(floor);
+    const grid=new THREE.GridHelper(24,30,0x4a8a8b,0x24464d);grid.position.y=.002;grid.material.transparent=true;grid.material.opacity=.2;grid.material.depthWrite=false;environment.add(grid);
+    const horizon=new THREE.Mesh(new THREE.TorusGeometry(3.7,.012,6,120),new THREE.MeshBasicMaterial({color:0x64d9d1,transparent:true,opacity:.52}));horizon.rotation.x=Math.PI/2;horizon.position.y=.025;environment.add(horizon);
+    const specklePositions=new Float32Array(420*3);for(let i=0;i<420;i++){specklePositions[i*3]=(Math.random()-.5)*24;specklePositions[i*3+1]=Math.random()*10-1;specklePositions[i*3+2]=(Math.random()-.5)*20-7;}
+    const speckles=new THREE.Points(new THREE.BufferGeometry(),new THREE.PointsMaterial({color:0x9bd9d4,size:.035,transparent:true,opacity:.55,sizeAttenuation:true}));speckles.geometry.setAttribute('position',new THREE.BufferAttribute(specklePositions,3));environment.add(speckles);
+
+    const bodyMaterials=[];
+    const makeMaterial=(color,roughness=.58)=>{const material=new THREE.MeshStandardMaterial({color,roughness,metalness:.06,transparent:true,opacity:1,depthWrite:false});bodyMaterials.push(material);return material;};
+    const cloth=makeMaterial(0x647e8d),trousers=makeMaterial(0x364a5a),skin=makeMaterial(0xa8755d,.72),shoes=makeMaterial(0x1b242d);
+    const person=new THREE.Group();scene.add(person);
+    const addPart=(geometry,material,position,scale=[1,1,1],rotation=[0,0,0],parent=person)=>{const mesh=new THREE.Mesh(geometry,material);mesh.position.set(...position);mesh.scale.set(...scale);mesh.rotation.set(...rotation);parent.add(mesh);return mesh;};
+    const capsule=(radius,length)=>new THREE.CapsuleGeometry(radius,length,6,12);
+    const torso=addPart(capsule(.29,.63),cloth,[0,1.15,0],[1.16,1,.78]);
+    addPart(new THREE.SphereGeometry(.31,20,14),cloth,[0,1.49,0],[1.32,.62,.78]);
+    addPart(capsule(.085,.16),skin,[0,1.65,0]);
+    addPart(new THREE.SphereGeometry(.205,24,18),skin,[0,1.91,0],[.9,1.1,.92]);
+    addPart(new THREE.ConeGeometry(.055,.12,12),skin,[0,1.89,.195],[.7,1,.7],[Math.PI/2,0,0]);
+    const eyeMaterial=makeMaterial(0x18212b,.3);
+    addPart(new THREE.SphereGeometry(.018,10,8),eyeMaterial,[-.075,1.95,.184]);addPart(new THREE.SphereGeometry(.018,10,8),eyeMaterial,[.075,1.95,.184]);
+    addPart(capsule(.105,.61),skin,[-.39,1.07,0],[1,1,.92],[0,0,-.1]);addPart(capsule(.105,.61),skin,[.39,1.07,0],[1,1,.92],[0,0,.1]);
+    addPart(new THREE.SphereGeometry(.105,14,10),skin,[-.43,.66,.015],[.72,1,.8]);addPart(new THREE.SphereGeometry(.105,14,10),skin,[.43,.66,.015],[.72,1,.8]);
+    const leftLeg=addPart(capsule(.135,.62),trousers,[-.16,.46,0],[1,1,.92]);addPart(capsule(.135,.62),trousers,[.16,.46,0],[1,1,.92]);
+    addPart(new THREE.BoxGeometry(.2,.1,.32),shoes,[-.16,.075,.065]);addPart(new THREE.BoxGeometry(.2,.1,.32),shoes,[.16,.075,.065]);
+
+    const organMaterials=[];
+    const organMaterial=(color,opacity=1)=>{const material=new THREE.MeshStandardMaterial({color,roughness:.42,metalness:.04,emissive:color,emissiveIntensity:.12,transparent:true,opacity,depthWrite:false,side:THREE.DoubleSide});organMaterials.push(material);return material;};
+    const lungMaterial=organMaterial(0x6dbcc1),heartMaterial=organMaterial(0xe85c66),liverMaterial=organMaterial(0x9a5a48),tubeMaterial=organMaterial(0xe2ab75),ribMaterial=organMaterial(0x9bc1bf,.22);
+    const organs=new THREE.Group();scene.add(organs);
+    const leftLung=addPart(new THREE.SphereGeometry(1,24,18),lungMaterial,[-.155,1.2,.22],[.14,.265,.105],[0,0,-.08],organs);
+    const rightLung=addPart(new THREE.SphereGeometry(1,24,18),lungMaterial,[.155,1.2,.22],[.14,.265,.105],[0,0,.08],organs);
+    addPart(new THREE.CylinderGeometry(.035,.045,.28,14),tubeMaterial,[0,1.43,.24], [1,1,1],[0,0,0],organs);
+    const heartShape=new THREE.Shape();heartShape.moveTo(0,.08);heartShape.bezierCurveTo(.2,.28,.42,.1,.3,-.1);heartShape.lineTo(0,-.34);heartShape.lineTo(-.3,-.1);heartShape.bezierCurveTo(-.42,.1,-.2,.28,0,.08);
+    const heart=addPart(new THREE.ExtrudeGeometry(heartShape,{depth:.1,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:.025,bevelThickness:.025}),heartMaterial,[0,1.12,.34],[.45,.45,.65],[0,0,0],organs);
+    addPart(new THREE.SphereGeometry(1,24,16),liverMaterial,[.025,.79,.22],[.265,.105,.12],[0,0,-.08],organs);
+    const ribs=new THREE.Group();organs.add(ribs);
+    for(let side of [-1,1])for(let rib=0;rib<4;rib++){const curve=new THREE.QuadraticBezierCurve3(new THREE.Vector3(0,1.43-rib*.105,.25),new THREE.Vector3(side*.28,1.39-rib*.105,.22),new THREE.Vector3(side*.24,1.27-rib*.105,.21));ribs.add(new THREE.Mesh(new THREE.TubeGeometry(curve,18,.009,5,false),ribMaterial));}
+
+    const cellGroup=new THREE.Group();cellGroup.position.set(0,1.16,.42);scene.add(cellGroup);
+    const membraneMaterial=new THREE.MeshBasicMaterial({color:0x83e5db,transparent:true,opacity:0,depthWrite:false,side:THREE.DoubleSide});
+    const membrane=new THREE.Mesh(new THREE.SphereGeometry(.43,32,24),membraneMaterial);cellGroup.add(membrane);
+    const cellCoreMaterial=new THREE.MeshStandardMaterial({color:0x7169a7,emissive:0x4b55b5,emissiveIntensity:.7,transparent:true,opacity:0,depthWrite:false});
+    const cellCore=new THREE.Mesh(new THREE.SphereGeometry(.095,24,18),cellCoreMaterial);cellGroup.add(cellCore);
+    const atomMaterial=new THREE.MeshBasicMaterial({color:0x71e7df,transparent:true,opacity:0,depthWrite:false});
+    const nucleusMaterial=new THREE.MeshBasicMaterial({color:0xffc878,transparent:true,opacity:0,depthWrite:false});
+    const atoms=[];
+    for(let index=0;index<4;index++){
+      const atom=new THREE.Group();atom.position.set(Math.cos(index*Math.PI/2)*.22,Math.sin(index*Math.PI/2)*.17,(index%2?-.12:.12));cellGroup.add(atom);
+      const nucleus=new THREE.Mesh(new THREE.SphereGeometry(.035,12,10),nucleusMaterial);atom.add(nucleus);
+      const orbit=new THREE.Mesh(new THREE.TorusGeometry(.1,.003,4,48),new THREE.MeshBasicMaterial({color:0x83e5db,transparent:true,opacity:0,depthWrite:false}));orbit.rotation.set(index*.7,index*.46,index*.35);atom.add(orbit);
+      const electron=new THREE.Mesh(new THREE.SphereGeometry(.03,10,8),atomMaterial);atom.add(electron);atoms.push({atom,electron,index});
+    }
+    const atomLabel=new THREE.Mesh(new THREE.SphereGeometry(.022,8,8),new THREE.MeshBasicMaterial({color:0xd9fff3,transparent:true,opacity:0,depthWrite:false}));cellGroup.add(atomLabel);
+
+    const stateCopy=[
+      ['01 / TOÀN THỂ','Con người trong môi trường','Ở xa, cơ thể là một chỉnh thể đứng yên tương đối giữa không gian xung quanh.'],
+      ['02 / CƠ QUAN','Những chuyển động bên trong','Tim co bóp, phổi trao đổi khí, gan chuyển hóa. Cơ thể vẫn vận động dù dáng đứng gần như không đổi.'],
+      ['03 / TẾ BÀO & HẠT VI MÔ','Chuyển động ở thang vi mô','Tế bào và các cấu trúc bên trong luôn biến đổi. Mô hình này chỉ minh họa ý niệm, không theo tỉ lệ thực.']
+    ];
+    let currentLevel=-1;
+    const smooth=(a,b,value)=>THREE.MathUtils.smoothstep(value,a,b);
+    function updateLevel(distance){const level=distance>8?0:distance>6.8?1:2;if(level===currentLevel)return;currentLevel=level;const [number,title,text]=stateCopy[level];document.getElementById('humanScaleNumber').textContent=number;document.getElementById('humanScaleTitle').textContent=title;document.getElementById('humanScaleText').textContent=text;}
+    function resize(){const width=stage.clientWidth||window.innerWidth,height=stage.clientHeight||window.innerHeight;renderer.setSize(width,height);camera.aspect=width/height;camera.updateProjectionMatrix();}
+    window.addEventListener('resize',resize,{passive:true});
+    const clock=new THREE.Clock();
+    function animate(){requestAnimationFrame(animate);if(!page.classList.contains('active'))return;controls.update();const elapsed=clock.getElapsedTime(),distance=camera.position.distanceTo(controls.target),organReveal=1-smooth(5.1,7.8,distance),atomReveal=1-smooth(2.45,5.6,distance),environmentReveal=smooth(6.4,9.2,distance);
+      for(const material of bodyMaterials)material.opacity=Math.max(.06,1-organReveal*.78-atomReveal*.14);
+      const organOpacity=organReveal*(1-atomReveal*.94);for(const material of organMaterials)material.opacity=material===ribMaterial?.2*organOpacity:organOpacity;
+      membraneMaterial.opacity=.24*atomReveal;cellCoreMaterial.opacity=.78*atomReveal;atomMaterial.opacity=atomReveal;nucleusMaterial.opacity=atomReveal;
+      for(const child of cellGroup.children)if(child.material?.color?.getHex()===0x83e5db)child.material.opacity=.3*atomReveal;
+      cellGroup.scale.setScalar(.72+.28*atomReveal);
+      for(const material of Array.isArray(grid.material)?grid.material:[grid.material])material.opacity=.2*environmentReveal;
+      floor.material.opacity=.32*environmentReveal;horizon.material.opacity=.52*environmentReveal;speckles.material.opacity=.55*environmentReveal;
+      torso.scale.y=1+Math.sin(elapsed*1.2)*.006;heart.scale.set(.45*(1+Math.pow(Math.max(0,Math.sin(elapsed*4.1)),8)*.12),.45*(1+Math.pow(Math.max(0,Math.sin(elapsed*4.1)),8)*.12),.65);leftLung.scale.y=.265*(1+Math.sin(elapsed*1.2)*.018);rightLung.scale.y=.265*(1+Math.sin(elapsed*1.2)*.018);
+      for(const {atom,electron,index} of atoms){const angle=elapsed*(1.2+index*.19)+index*1.3;electron.position.set(Math.cos(angle)*.1,Math.sin(angle)*.1,Math.sin(angle*.65+index)*.035);atom.rotation.y=elapsed*.16*(index%2?1:-1);}
+      atomLabel.position.set(Math.sin(elapsed*.8)*.39,Math.cos(elapsed*.67)*.25,.27);updateLevel(distance);renderer.render(scene,camera);
     }
     animate();
   </script>
